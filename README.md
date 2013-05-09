@@ -25,6 +25,6 @@ I'll run through various other linux distros when I get time and fix any issues,
 Requirements
 ------------
 
-* TextMate 2.0 - also requires installing shell support from Preferences.
-* gls - ls replacement that has some nicer features. I may remove this requirement later.
-* OSX - for SSID detection. I will find a better cross-platform way to do this later.
+* TextMate 2.0 - also requires installing shell support from Preferences. http://api.textmate.org/downloads/beta
+* CoreUtils - This is requuired for gls (ls replacement) to function, it has some nicer features. I may remove this requirement later. https://github.com/homer6/gnu_coreutils
+* OSX - for SSID detection. I will find a better cross-platform way to do this later. 
