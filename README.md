@@ -5,6 +5,9 @@ bash_profile
 
 I've uploaded two new files, one is Mac specific as it gives you some additional features, the other has been tested on Debian based linux distros, but should work on most others. :)
 
+On Mac, just install 'bash_profile-mac' to '~/._bash_profile'
+On Linux, install 'bashrc-linux' to '~/.bashrc'
+
 **Summary**
 
 My modified bash_profile. I was getting sick of the boring Terminal.app bash prompt and decided to spice things up a bit.
