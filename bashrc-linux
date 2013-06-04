@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# If not running interactively, don't do anything
+[ -z "$PS1" ] && return
+
 DULL=0
 BRIGHT=1
 
@@ -60,35 +63,6 @@ BRIGHT_WHITE="\[$ESC[${BRIGHT};${FG_WHITE}m\]"
 REV_CYAN="\[$ESC[${DULL};${BG_WHITE};${BG_CYAN}m\]"
 REV_RED="\[$ESC[${DULL};${FG_YELLOW}; ${BG_RED}m\]"
 
-# STELLASDK BEGIN
-function appendPath () {
-        entry=$1;
-        PATH="$(echo $PATH | sed "s@:$entry@@g")";
-        PATH="$PATH:$entry"
-}
-
-ANDROID_NDK_PATH=/opt/Android/android-ndk-r7b
-ANDROID_SDK_PATH=/opt/Android/android-sdk-macosx
-
-appendPath "/opt/StellaSDK/bin"
-appendPath "$ANDROID_NDK_PATH"
-appendPath "$ANDROID_SDK_PATH/tools"
-appendPath "$ANDROID_SDK_PATH/platform-tools"
-
-PATH="$PATH:~/bin"
-# STELLASDK END
-
-# This function replaces rm in a normal shell to move files to the trash instead of immediately deleting them. This has no effect on scripts or apps that make use of rm normally. :)
-function rm () {
-  local path
-  for path in "$@"; do
-    if [[ "$path" = -* ]]; then :
-    else
-      mv "$path" ~/.Trash/"$path"
-    fi
-  done
-}
-
 function setTitle {	
 	ssh=$SSH_CLIENT
 	
@@ -109,7 +83,7 @@ function setTitle {
 		branch=$(git branch | grep \*)
 		branch=${branch//\* /}
 	
-		if [[ $status != 'nothing to commit (working directory clean)' && $status != 'nothing added to commit but untracked files present (use "git add" to track)' && $status != 'no changes added to commit (use "git add" and/or "git commit -a")' ]]; then
+		if [[ $status != 'nothing to commit (working directory clean)' && $status != 'nothing added to commit but untracked files present (use "git add" to track)' ]]; then
 			# the repo has changes
 			PS1="\[\e]2;$ssh ${PWD##*/}\a\]${RED}$ssh${RESET}${YELLOW}[$branch]${RESET} \W # "
 		else
@@ -122,34 +96,14 @@ function setTitle {
 	fi
 }
 
-function changeTheme {
-  NAME=$1; if [ -z "$NAME" ]; then NAME="Default"; fi
-  osascript -e "tell application \"Terminal\" to set current settings of front window to settings set \"$NAME\""
-}
- 
-function darkTheme {
-  changeTheme "Shaps-Dark"
-}
-
-function lightTheme {
-	changeTheme "Shaps-Light"
-}
-
 export PROMPT_COMMAND='setTitle'
 export PS2='# '
 export PS3='# '
 export PS4='# '
-export PARSE_APPLICATION_ID="OljQuok9JrEOWgtUMNuy12fHQKd3ml38GFKYj4vr"
-export PARSE_REST_API_KEY="vvy9bWi0Tmz1Pj2L4Bpate09FwxukGQIoLQhd5z0"
-export EDITOR="$HOME/bin/mate -w"
-
-alias dark=darkTheme;
-alias light=lightTheme;
-alias ssh_mount="mkdir /Volumes/SSHFS && sshfs shaps@shaps.me:/ /Volumes/SSHFS"
 
 # miscellaneous
 alias grep='grep --color=auto'
-alias mate_bash="mate ~/.bash_profile"
+alias sudo='sudo '
 
 # history
 alias th="cut -f1 -d\" \" ~/.bash_history | sort | uniq -c | sort -nr | head -n 30"
@@ -157,48 +111,32 @@ alias h='history'
 alias c='printf "# -------------------- #" && clear'
 alias line='printf "\n# -------------------- #\n\n"'
 alias num='set -- * && echo $# results'
-alias mate_adgen="mate ~/Dropbox/Scripts/adgen/adgen.sh"
-alias debug_adgen="~/Dropbox/Scripts/adgen/adgen.sh"
-alias ssh_root="echo 'SSH not supported for root!'"
-alias ssh_shaps="ssh -R 52698:127.0.0.1:52698 shaps@shaps.me"
-alias ssh_git="ssh -R 52698:127.0.0.1:52698 git@shaps.me"
 
-# change directory
-alias cd_dev="cd ~/Documents/Development"
-alias cd_personal="cd ~/Documents/Development/personal"
-alias cd_work="cd ~/Documents/Development/net-m"
-alias cd_dropbox="cd ~/Dropbox"
 alias cd_desktop="cd ~/Desktop"
 alias cd_documents="cd ~/Documents"
-alias cd_shaps="cd ~/Documents/Development/personal/Universal/ShapsLibrary/ShapsLibrary"
 
-# projects
-alias cd_resting='cd ~/Documents/Development/personal/Universal/RESTing'
-alias cd_gage='cd ~/Documents/Development/personal/Universal/Gage'
-alias cd_playboy='cd ~/Documents/Development/net-m/playboy'
-alias cd_notifier='cd ~/Documents/Development/net-m/NMNotifier'
-
+alias ls="ls --color=auto"
 # ls
-alias ls="gls --color --group-directories-first -h -p"
-alias lla="ls -lhAG"				  # Long list everything.
-alias lh='ls -cdG .*'          	      # Hidden files only.
-alias ll='ls -lhG && num'             	  # Long list.
-alias la='ls -cAG'                	  # List everything.
-alias ld='ls -CGdp */ | sed "s/\///g"'     # Directories only.
-alias lf="ls | grep -v '/'"  	  # Files only.
+# alias ls="gls --color --group-directories-first -h -p"
+# alias lla="ls -lhAG"				  # Long list everything.
+# alias lh='ls -cdG .*'          	      # Hidden files only.
+# alias ll='ls -lhG && num'             	  # Long list.
+# alias la='ls -cAG'                	  # List everything.
+# alias ld='ls -CGdp */ | sed "s/\///g"'     # Directories only.
+# alias lf="ls | grep -v '/'"  	  # Files only.
 
-h="\e[0;33mHidden\e[m"
-d="\e[0;33mDirectories\e[m"
-f="\e[0;33mFiles\e[m"
+# h="\e[0;33mHidden\e[m"
+# d="\e[0;33mDirectories\e[m"
+# f="\e[0;33mFiles\e[m"
 
-alias l='printf "\n$d\n" && ld && printf "\n$f\n" && lf && echo ""' 
-alias l.='printf "\n$h\n" && lh && printf "\n\n$d\n" && ld && printf "\n\n$f\n" && lf && echo ""'
+# alias l='printf "\n$d\n" && ld && printf "\n$f\n" && lf && echo ""' 
+# alias l.='printf "\n$h\n" && lh && printf "\n\n$d\n" && ld && printf "\n\n$f\n" && lf && echo ""'
 
 # Get greeting from time
 # get current hour (24 clock format i.e. 0-23)
 hour=$(date +"%H")
 
-USERNAME="\e[0;34m$USER\e[m"
+USERNAME="\e[1;34m$USER\e[m"
  
 # if it is midnight to midafternoon will say G'morning
 if [ $hour -ge 0 -a $hour -lt 12 ]
@@ -212,8 +150,8 @@ else # it is good evening till midnight
   greet="Good evening, $USERNAME"
 fi
 
-# this is much better now, prints all ip addresses and also 
-ip=$(ifconfig | awk -F "[: ]+" '/inet / { if ($2 != "127.0.0.1") printf $2 ", " }' | sed 's/, $//')
+# this is much better now, prints all ip addresses and also
+ip=$(ifconfig | awk -F "[: ]+" '/inet addr:/ { if ($4 != "127.0.0.1") print $4 }')
 	
 network=""
 
@@ -223,7 +161,7 @@ if [[ $(uname) = "Darwin" ]]; then
 	ping -s 10 -c 1 -t 1 google.com >> /dev/null 2>&1
 		
 	if [[ ! -z $ssid ]]; then
-		ssid="<\033[0;34m$ssid\e[0m> "	
+		ssid="<\033[1;34m$ssid\e[0m> "	
 	elif [[ $? -ne 0 ]]; then
 		ssid="<\033[1;33mOFFLINE\e[0m> "	
 	fi
@@ -256,14 +194,14 @@ printf "$ssid"
 int=true
 for i in $ip; do 
 	if [[ $int = true ]]; then
-		printf "\033[0;34m$i\e[0m "; 	
+		printf "\033[1;34m$i\e[0m "; 	
 		int=false
 	else
 		printf "$i "
 	fi
 done
 
-uptime=$(uptime | grep -ohe 'up .*' | sed 's/,//g' | awk '{ print $2" "$3 }')
+uptime=$(uptime | grep -ohe 'up .*' | sed 's/,//g' | awk '{ print $2 $3 }')
 # uptime=$(uptime | grep -ohe 'up .*' | sed 's/,//g' | awk '{ print $2" " }')
 users=$(uptime | grep -ohe '[0-9.*] user[s,]' | cut -b 1)
 
@@ -271,14 +209,3 @@ printf "\n%20s  %s" "Current Path:" "${PWD//$HOME/~}"
 printf "\n%20s  %b" "Uptime:"		"$uptime"
 printf "\n%20s  %b" "Users:" 		"$users"
 printf "\n\n"
-
-printf "Choose a theme: (D) Dark, (L) Light: "
-read -s -n 1 yn
-
-printf "\n\n"
-
-case $yn in
-	[Dd]*)	darkTheme;; 
-	[Ll]*)  lightTheme;;
-        *) 	;;
-esac
