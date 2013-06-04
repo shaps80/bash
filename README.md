@@ -1,6 +1,12 @@
 bash_profile
 ============
 
+**Updates**
+
+I've uploaded two new files, one is Mac specific as it gives you some additional features, the other has been tested on Debian based linux distros, but should work on most others. :)
+
+**Summary**
+
 My modified bash_profile. I was getting sick of the boring Terminal.app bash prompt and decided to spice things up a bit.
 
 It currently supports:
