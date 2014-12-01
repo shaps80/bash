@@ -133,7 +133,6 @@ add_dashboard() {
   cprint "$2" $blue
 }
 
-# [master..origin/master -> behind] shaps80.github.io #
 setTitle() {	  
   local search=' '
   local replace='%20'
@@ -227,7 +226,7 @@ elif [ $dashboard_hour -ge 12 -a $hour -lt 18 ]
 then
   greet="Good Afternoon, $USER"
 else # it is good evening till midnight
-  greet="Its late Shaps, would Annie really want you up this late?"
+  greet="Its late $USER, should you really be up this late?"
 fi
 
 if [[ -z $dashboard_ip ]]; then
