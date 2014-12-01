@@ -1,7 +1,7 @@
 BASH Profile
 ============
 
-<img src="http://shaps.me/downloads/git-messages.jpg" name="Shaps Bash Profile"/>
+<img src="http://shaps.me/downloads/git-messages.jpg" name="Shaps Bash Profile" width="395" height="380"/>
 
 ## Updates
 
