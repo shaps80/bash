@@ -1,7 +1,7 @@
 BASH Profile
 ============
 
-<a href="httpshttps://github.com/shaps80/bash/blob/master/.bash_profile"><img src="http://shaps.me/downloads/git-messages.jpg" name="Shaps Bash Profile" width="395" height="380"/></a>
+<a href="https://github.com/shaps80/bash/blob/master/.bash_profile"><img src="http://shaps.me/downloads/git-messages.jpg" name="Shaps Bash Profile" width="395" height="380"/></a>
 
 ## Updates
 
