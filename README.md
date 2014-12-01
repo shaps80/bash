@@ -1,6 +1,8 @@
 BASH Profile
 ============
 
+<img src="http://shaps.me/downloads/git-messages.jpg" name="Shaps Bash Profile"/>
+
 ## Updates
 
 More full-featured GIT support. Xcode support and more...
