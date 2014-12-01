@@ -1,12 +1,12 @@
 BASH Profile
 ============
 
-**Updates**
+## Updates
 
 More full-featured GIT support. Xcode support and more...
 To install, copy the script to __'~/._bash_profile'__ or __'~/.bashrc'__
 
-**Summary**
+## Summary
 
 As many of us developers know, working from Terminal on a Mac leaves something to be desired. 
 I certainly find it faster to get things done, but only when I have the right information and tools at my fingertips.
