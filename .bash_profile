@@ -1,174 +1,206 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-source ~/.dev-scripts.sh
+alias grep='grep --color=auto'
+alias mate_bash="mate ~/.bash_profile"
+alias mate_tig="mate ~/.tigrc"
+alias mate_git="mate ~/.gitconfig"
 
+alias gs="git st" # show status
+alias gd="git del" # delete branch
+alias go="git co" # switch branch
+alias gb="git nb" # new branch
+alias gc="git com" # commit
+alias gn="git new" # show new commits since last pull
 
-DULL=0
-BRIGHT=1
+alias cd_dev="cd ~/Development"
+alias cd_personal="cd ~/Development/personal"
+alias cd_tab="cd ~/Development/TAB"
+alias cd_dropbox="cd ~/Dropbox"
+alias cd_desktop="cd ~/Desktop"
+alias cd_documents="cd ~/Documents"
+alias cd_downloads="cd ~/Downloads"
+alias cd_wallpapers="cd ~/Pictures/Wallpapers"
 
-FG_BLACK=30
-FG_RED=31
-FG_GREEN=32
-FG_YELLOW=33
-FG_BLUE=34
-FG_VIOLET=35
-FG_CYAN=36
-FG_WHITE=37
+alias jekyll-serve="open_site & bundle exec jekyll serve -w"
+alias jekyll-update="git add . ; git commit -am 'new post'; git push"
 
-FG_NULL=00
-
-BG_BLACK=40
-BG_RED=41
-BG_GREEN=42
-BG_YELLOW=43
-BG_BLUE=44
-BG_VIOLET=45
-BG_CYAN=46
-BG_WHITE=47
-
-BG_NULL=00
-
-##
-# ANSI Escape Commands
-##
-ESC="\033"
-NORMAL="\[$ESC[m\]"
-RESET="\[$ESC[${DULL};${FG_WHITE};${BG_NULL}m\]"
-
-##
-# Shortcuts for Colored Text ( Bright and FG Only )
-##
-
-# DULL TEXT
-BLACK="\[$ESC[${DULL};${FG_BLACK}m\]"
-RED="\[$ESC[${DULL};${FG_RED}m\]"
-GREEN="\[$ESC[${DULL};${FG_GREEN}m\]"
-YELLOW="\[$ESC[${DULL};${FG_YELLOW}m\]"
-BLUE="\[$ESC[${DULL};${FG_BLUE}m\]"
-VIOLET="\[$ESC[${DULL};${FG_VIOLET}m\]"
-CYAN="\[$ESC[${DULL};${FG_CYAN}m\]"
-WHITE="\[$ESC[${DULL};${FG_WHITE}m\]"
-
-# BRIGHT TEXT
-BRIGHT_BLACK="\[$ESC[${BRIGHT};${FG_BLACK}m\]"
-BRIGHT_RED="\[$ESC[${BRIGHT};${FG_RED}m\]"
-BRIGHT_GREEN="\[$ESC[${BRIGHT};${FG_GREEN}m\]"
-BRIGHT_YELLOW="\[$ESC[${BRIGHT};${FG_YELLOW}m\]"
-BRIGHT_BLUE="\[$ESC[${BRIGHT};${FG_BLUE}m\]"
-BRIGHT_VIOLET="\[$ESC[${BRIGHT};${FG_VIOLET}m\]"
-BRIGHT_CYAN="\[$ESC[${BRIGHT};${FG_CYAN}m\]"
-BRIGHT_WHITE="\[$ESC[${BRIGHT};${FG_WHITE}m\]"
-
-# REV TEXT as an example
-REV_CYAN="\[$ESC[${DULL};${BG_WHITE};${BG_CYAN}m\]"
-REV_RED="\[$ESC[${DULL};${FG_YELLOW}; ${BG_RED}m\]"
-
-
-function setTitle {        
-        ssh=$SSH_CLIENT
-        
-        if [[ ! -z $ssh ]]; then
-                sshvars=($SSH_CONNECTION)
-                ssh="[${sshvars[2]}] "
-        fi
-
-    local SEARCH=' ';
-    local REPLACE='%20';
-    local PWD_URL="file://$HOSTNAME${PWD//$SEARCH/$REPLACE}";
-    printf '\e]7;%s\a' "$PWD_URL"
-        
-        git rev-parse > /dev/null 2>&1
-        
-        if [[ $? -eq 0 ]]; then                
-                status=$(git status 2> /dev/null | tail -n1)
-                branch=$(git branch | grep \*)
-                branch=${branch//\* /}
-        
-                if [[ $status != 'nothing to commit, working directory clean' && $status != 'Changes not staged for commit' && $status != 'nothing to commit (working directory clean)' && $status != 'nothing added to commit but untracked files present (use "git add" to track)' && $status != 'no changes added to commit (use "git add" and/or "git commit -a")' ]]; then
-                        # the repo has changes
-                        PS1="\[\e]2;$ssh ${PWD##*/}\a\]${RED}$ssh${RESET}${YELLOW}[$branch]${RESET} \W # "
-                else
-                        # the repo doesn't have any uncommitted changes
-                        PS1="\[\e]2;$ssh ${PWD##*/}\a\]${RED}$ssh${RESET}[$branch] \W # "
-                fi
-        else
-                # we're not inside a repo
-                PS1="\[\e]2;$ssh ${PWD##*/}\a\]${RED}$ssh${RESET}\W # "
-        fi
-}
+black='\033[0;30m'
+white='\033[0;37m'
+red='\033[0;31m'
+green='\033[0;32m'
+yellow='\033[0;33m'
+blue='\033[0;34m'
+magenta='\033[0;35m'
+cyan='\033[0;36m'
+none='\e[0m' # reset color
 
 export PROMPT_COMMAND='setTitle'
 export PS2='# '
 export PS3='# '
 export PS4='# '
-export EDITOR="/usr/local/bin/mate -w"
+export EDITOR="/usr/bin/emacs"
 
-# miscellaneous
-alias grep='grep --color=auto'
-alias mate_bash="mate ~/.bash_profile"
+# print with color
+cprint() { printf "${2}${1}$none"; }
+# print with color and newline
+cprintn() { printf "${2}${1}$none\n"; }
+# set color -- don't forget to call setcolor $none to reset
+setcolor() { printf $1; }
 
-# history
-alias th="cut -f1 -d\" \" ~/.bash_history | sort | uniq -c | sort -nr | head -n 30"
-alias h='history'
-alias c='printf "# -------------------- #" && clear'
-alias line='printf "\n# -------------------- #\n\n"'
-alias num='set -- * && echo $# results'
+no_internet() {
+  cprintn "You don't appear to have an internet connection." $red
+}
 
-# spotify
-alias play='spotify play'
-alias pause='spotify pause'
-alias stop='spotify pause'
-alias next='spotify next'
-alias prev='spotify prev'
-alias back='spotify prev'
-alias up='spotify vol up'
-alias down='spotify vol down'
-alias vol='spotify vol $1'
-alias quit='spotify quit'
-alias status='spotify status'
+mark() {
+  echo ""
+  cprintn "$(date) ----------------------------------------" $magenta
+}
 
-# Get greeting from time
-# get current hour (24 clock format i.e. 0-23)
-hour=$(date +"%H")
+open_site() {
+  sleep 1
+  open "http://0.0.0.0:4000"
+}
 
-USERNAME="\e[0;34m$USER\e[m"
+open_workspace_or_project_with_app()
+{	
+	if [[ -z "$1" || "$#" -ne 2 ]]; then
+    echo -e "Nothing found\n"
+		return
+	fi
  
-# if it is midnight to midafternoon will say G'morning
-if [ $hour -ge 0 -a $hour -lt 12 ]
-then
-  greet="Good Morning, $USERNAME"
-# if it is midafternoon to evening ( before 6 pm) will say G'noonx
-elif [ $hour -ge 12 -a $hour -lt 18 ] 
-then
-  greet="Good Afternoon, $USERNAME"
-else # it is good evening till midnight
-  greet="Good evening, $USERNAME"
-fi
+	IDEFileName=${2##*/}
+	filename=${1##*/}
+	echo -e "\nOpening $filename with $IDEFileName\n"
+	open "$1" -a "$2"
+}
+ 
+select_workspace_or_project()
+{
+	count=$#
+	file=""
+	
+	if [[ $count -eq 1 ]]; then
+		file=$1
+	elif [[ $count > 1 ]]; then
+		echo ""
+		
+		for (( i = 0; i < $count; i++ )); do
+			index=`expr $i + 1`
+			eval "filename=\${$index}"
+			echo -e "\t" "[$index]" "$filename"
+		done
+		
+		printf "\nSelect the file to open: "
+		read -s -n 1 result
+		
+		if [[ ! -z $result ]]; then
+			eval "file=\${$result}"
+		fi
+	fi	
+}
+ 
+open_workspace_or_project() 
+{	
+	shopt -s nullglob
+	workspaces=(*.xcworkspace)
+	count=${#workspaces[@]}
+	
+	if [[ count -ne 0 ]]; then
+		select_workspace_or_project "${workspaces[@]}"
+		open_workspace_or_project_with_app "$file" $1
+	else
+		shopt -s nullglob
+		projects=(*.xcodeproj)
+		count=${#projects[@]}
+	
+		select_workspace_or_project "${projects[@]}"
+		open_workspace_or_project_with_app "$file" $1
+	fi
+}
+ 
+opena() {
+	IDEPath="/Applications/AppCode.app"
+	open_workspace_or_project "$IDEPath"
+}
+ 
+openx () {
+	IDEPath="/Applications/Xcode.app"	
+	open_workspace_or_project "$IDEPath"
+}
 
-# this is much better now, prints all ip addresses and also 
-ip=$(ifconfig | awk -F "[: ]+" '/inet / { if ($2 != "127.0.0.1") printf $2 ", " }' | sed 's/, $//')
-        
-network=""
+add_dashboard() {
+  printf "\n%20s  %s" "$1"
+  cprint "$2" $blue
+}
 
-if [[ $(uname) = "Darwin" ]]; then
-        ssid=$(/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -I | awk '/ SSID/ {print substr($0, index($0, $2))}')
+# [master..origin/master -> behind] shaps80.github.io #
+setTitle() {	  
+  local search=' '
+  local replace='%20'
+  local current_path="${PWD##*/}"
+  local local_branch="$red<no branch>$none"
+  local remote_branch="$red<no remote>$none"
+  local status=""
+  
+	git rev-parse > /dev/null 2>&1
 
-        ping -s 10 -c 1 -t 1 google.com >> /dev/null 2>&1
-                
-        if [[ ! -z $ssid ]]; then
-                ssid="<\033[0;34m$ssid\e[0m> "
-        elif [[ $? -ne 0 ]]; then
-                ssid="<\033[1;33mOFFLINE\e[0m> "        
-        fi
-fi
+	if [[ $? -ne 0 ]]; then
+  	# we're not inside a repo 
+    PS1="$current_path # "
+    return
+  fi
+  
+  branch=$(git branch | grep \*)
+  
+  if [[ ! -z $branch ]]; then
+    # we have a local branch
+    branch="${branch//\* /}"
+    local_branch=$branch
+    
+    git diff-index --quiet HEAD -- > /dev/null 2>&1
+    
+    if [ $? -ne 0 ]; then
+      # the repo has changes
+      local_branch="$red$local_branch$none"
+    else
+      untracked=$(git ls-files --others --exclude-standard) > /dev/null 2>&1
+      
+      if [[ ! -z $untracked ]]; then
+        # the repo has untracked files only
+        local_branch="$yellow$local_branch$none"
+      else
+        local_branch="$green$local_branch$none"
+      fi
+    fi
+  fi
+  
+  git rev-parse --symbolic-full-name --abbrev-ref $branch@{u} > /dev/null 2>&1
+  
+  if [ $? -eq 0 ]; then
+    # we have a remote branch
+    remote_branch=$(git rev-parse --symbolic-full-name --abbrev-ref $branch@{u})
+    
+    LOCAL=$(git rev-parse @)
+    REMOTE=$(git rev-parse @{u})
+    BASE=$(git merge-base @ @{u})
+    
+    if [ $LOCAL = $REMOTE ]; then
+      status=" ->$green up-to-date$none"
+    elif [ $LOCAL = $BASE ]; then
+      status=" ->$red behind$none"
+    elif [ $REMOTE = $BASE ]; then
+      status=" ->$green ahead$none"
+    else
+      status=" ->$yellow diverged$none"
+    fi
+  fi
+  
+  PS1="[$local_branch..$remote_branch$status] $current_path # "
+}
 
-if [[ -z $ip ]]; then
-        ip="Not connected."
-fi
-
-# clear and display message of the day
 clear
 cat <<EOF    
+
                          ''~\`\`
                         ( o o )
 +------------------.oooO--(_)--Oooo.------------------+
@@ -180,27 +212,42 @@ cat <<EOF
 
 EOF
 
-printf "$greet\n"
+dashboard_hour=$(date +"%H")
+dashboard_uptime=$(uptime | sed 's/.*up \([^,]*\), .*/\1/')
+dashboard_path="${PWD//$HOME/~}"
+dashboard_ip=$(ifconfig en0 | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p')
+dashboard_gateway=$(netstat -rn | grep "default" | awk '{print $2}')
 
+# if it is midnight to midafternoon will say G'morning
+if [ $dashboard_hour -ge 0 -a $dashboard_hour -lt 12 ]
+then
+  greet="Good Morning, $USER"
+# if it is midafternoon to evening ( before 6 pm) will say G'noonx
+elif [ $dashboard_hour -ge 12 -a $hour -lt 18 ] 
+then
+  greet="Good Afternoon, $USER"
+else # it is good evening till midnight
+  greet="Its late Shaps, would Annie really want you up this late?"
+fi
 
-printf "\n%20s  " "Interfaces:"
-printf "$ssid"
+if [[ -z $dashboard_ip ]]; then
+	dashboard_network="$red""No Connection""$none"
+else 
+  if [[ -z $dashboard_gateway ]]; then
+    dashboard_network="$dashboard_ip <$red""No Gateway""$none>"
+  else
+    ping=$(ping -s1 -t1 -n -i0.1 -c1 -o $dashboard_gateway)
+    if [[ -z $ping ]]; then
+    dashboard_network="$dashboard_ip <$yellow""No Internet""$none>"
+    else
+      dashboard_network="$dashboard_ip $none<$dashboard_gateway>"
+    fi
+  fi
+fi
 
-int=true
-for i in $ip; do 
-        if [[ $int = true ]]; then
-                printf "\033[0;34m$i\e[0m ";         
-                int=false
-        else
-                printf "$i "
-        fi
-done
+echo $greet
+add_dashboard "Network" "$dashboard_network"
+add_dashboard "Uptime" "$dashboard_uptime"
+add_dashboard "Current Path" "$dashboard_path"
 
-uptime=$(uptime | grep -ohe 'up .*' | sed 's/,//g' | awk '{ print $2" "$3 }')
-# uptime=$(uptime | grep -ohe 'up .*' | sed 's/,//g' | awk '{ print $2" " }')
-users=$(uptime | grep -ohe '[0-9.*] user[s,]' | cut -b 1)
-
-printf "\n%20s  %s" "Current Path:" "${PWD//$HOME/~}"
-printf "\n%20s  %b" "Uptime:"                "$uptime"
-printf "\n%20s  %b" "Users:"                 "$users"
 printf "\n\n"
