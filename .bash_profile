@@ -133,6 +133,7 @@ add_dashboard() {
   cprint "$2" $blue
 }
 
+# [master..origin/master -> behind] shaps80.github.io #
 setTitle() {	  
   local search=' '
   local replace='%20'
@@ -217,16 +218,11 @@ dashboard_path="${PWD//$HOME/~}"
 dashboard_ip=$(ifconfig en0 | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p')
 dashboard_gateway=$(netstat -rn | grep "default" | awk '{print $2}')
 
-# if it is midnight to midafternoon will say G'morning
 if [ $dashboard_hour -ge 0 -a $dashboard_hour -lt 12 ]
 then
   greet="Good Morning, $USER"
-# if it is midafternoon to evening ( before 6 pm) will say G'noonx
-elif [ $dashboard_hour -ge 12 -a $hour -lt 18 ] 
-then
+else
   greet="Good Afternoon, $USER"
-else # it is good evening till midnight
-  greet="Its late $USER, should you really be up this late?"
 fi
 
 if [[ -z $dashboard_ip ]]; then
