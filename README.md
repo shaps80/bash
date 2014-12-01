@@ -4,9 +4,7 @@ BASH Profile
 **Updates**
 
 More full-featured GIT support. Xcode support and more...
-
-On Mac, just install to '~/._bash_profile'
-On Linux, install to '~/.bashrc'
+To install, copy the script to __'~/._bash_profile'__ or __'~/.bashrc'__
 
 **Summary**
 
