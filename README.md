@@ -1,39 +1,49 @@
-bash_profile
+BASH Profile
 ============
 
 **Updates**
 
-I've uploaded two new files, one is Mac specific as it gives you some additional features, the other has been tested on Debian based linux distros, but should work on most others. :)
+More full-featured GIT support. Xcode support and more...
 
-On Mac, just install 'bash_profile-mac' to '~/._bash_profile'
-On Linux, install 'bashrc-linux' to '~/.bashrc'
+On Mac, just install to '~/._bash_profile'
+On Linux, install to '~/.bashrc'
 
 **Summary**
 
-My modified bash_profile. I was getting sick of the boring Terminal.app bash prompt and decided to spice things up a bit.
+As many of us developers know, working from Terminal on a Mac leaves something to be desired. 
+I certainly find it faster to get things done, but only when I have the right information and tools at my fingertips.
 
-It currently supports:
+So I set out to create a simple .bash_profile that would have pretty GIT output on the prompt, as well as a nice welcome message with relevant information. I also needed Xcode and GIT support baked in. 
 
-* A welcome greeting specific to the time of day
-* IP addresses from all interfaces on the computer
-* SSID of the wifi network you're connected to (if applicable)
-* Internet connection unavailable state (if applicable)
+For you AppCode users, there's some love for you too ;)
+
+The most important upgrade to this version is that I've cleaned up the entire script to make it really easy to add custom 'dashboard' data, and to keep your aliases, etc... clean and out of the way at the top of the file.
+
+## Dashboard
+
+* A time specific welcome greeting
+* IP address and gateway
+* Connection state, IP, not connected, no internet, etc...
 * Current working directory
-* Uptime and number of users
-* Overrides rm without affecting other scripts. Now when you run rm from bash it will move the file/folder to the Trash.
-* Prompt now shows current branch (GIT) if you're inside a repo and also shows colored when the repo has uncommitted changes.
-* Prompt also shows the local ip address of the machine you're connected to when ssh-ed to it.
-* Makes textmate the default editor
+* Current system uptime
 
-The information is parsed and filtered to make things clean and I've attached a sample of what the terminal will look like. 
+## GIT Support
 
-Although this script was written for OSX and the SSID detection is actually OSX specific, I have had this running on Ubuntu successfully. 
+The prompt now shows various states to indicate the current status of your git repositories:
 
-I'll run through various other linux distros when I get time and fix any issues, then I'll list the supported distros here. :)
+* If you're not inside a git repo, there's a nice fallback 'path-only' prompt
+* If you are inside a repo with no branches
+* If you have a local branch with no remote
+* If you have changes on your local branch
+* If you are ahead, behind, diverged or up-to-date on your local branch -- compare to remote
+
+## Development
+
+* openx will search first for an Xcode workspace, falling back to a project if none found
+  - In the event you have multiple workspaces or projects, you will be prompted for a selection
+* opena performs the same as above, but with AppCode as your editor choice
 
 Requirements
 ------------
 
-* TextMate 2.0 - also requires installing shell support from Preferences. http://api.textmate.org/downloads/beta
-* CoreUtils - This is requuired for gls (ls replacement) to function, it has some nicer features. I may remove this requirement later. https://github.com/homer6/gnu_coreutils
-* OSX - for SSID detection. I will find a better cross-platform way to do this later. 
+This script has **zero** dependencies!
