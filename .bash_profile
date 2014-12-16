@@ -30,23 +30,25 @@ alias psql="'/Applications/Postgres.app/Contents/Versions/9.3/bin'/psql -p5432"
 export EDITOR="/usr/bin/emacs"
 export TASKS_FILE="$HOME/.tasks"
 
+current_path="${PWD##*/}"
+
 # colors
-black='\[\e[30m\]'
-white='\[\e[37m\]'
-red='\[\e[31m\]'
-green='\[\e[32m\]'
-yellow='\[\e[33m\]'
-blue='\[\e[34m\]'
-magenta='\[\e[35m\]'
-cyan='\[\e[36m\]'
+black='\001\e[30m\002'
+white='\001\e[37m\002'
+red='\001\e[31m\002'
+green='\001\e[32m\002'
+yellow='\001\e[33m\002'
+blue='\001\e[34m\002'
+magenta='\001\e[35m\002'
+cyan='\001\e[36m\002'
 
 # formatting
-underline='\[\e[4m\]'
-bold='\[\e[1m\]'
-blink='\[\e[5m\]'
+underline='\001\e[4m\002'
+bold='\001\e[1m\002'
+blink='\001\e[5m\002'
 
 # reset color and formatting
-reset='\[\e[0m\]' 
+reset='\001\e[0m\002' 
 
 print() {  
   for i in "${@:2}"; do
@@ -196,12 +198,14 @@ restore_pwd() {
   printf '\e]7;%s\a' "$pwd_url"
 }
 
+set_title() {
+  PROMPT_COMMAND="echo -ne \"\033]0;$current_path\007\""
+}
 
 # [local..remote -> status] pwd #
-set_title() {	  
+set_prompt() {	  
   restore_pwd # This MUST be called in order to restore the PWD after a relaunch!
   
-  local current_path="${PWD##*/}"
   local local_branch="$red<no branch>$reset"
   local remote_branch="$red<no remote>$reset"
   local git_status=""
@@ -210,7 +214,7 @@ set_title() {
 
 	if [[ $? -ne 0 ]]; then
   	# we're not inside a repo 
-    PS1="\[$current_path\] # "
+    PS1="$current_path # "
   else
     branch=$(git branch | grep \*)
   
@@ -262,8 +266,37 @@ set_title() {
 }
 
 clear
+cat <<EOF    
 
-export PROMPT_COMMAND='set_title'
+                         ''~\`\`
+                        ( o o )
++------------------.oooO--(_)--Oooo.------------------+
+|                                                     |
+|                    .oooO                            |
+|                    (   )   Oooo.                    |
++---------------------\ (----(   )--------------------+
+
+
+EOF
+
+dashboard_hour=$(date +"%H")
+dashboard_uptime=$(uptime | sed 's/.*up \([^,]*\), .*/\1/')
+dashboard_path="${PWD//$HOME/~}"
+dashboard_ip=$(ifconfig en0 | awk '/inet / {print $2}' | sed 's/^[addr:]*//g')
+
+configure_greeting
+configure_network
+
+printn "$greet"
+
+add_dashboard "Network" "$dashboard_network"
+add_dashboard "Uptime" "$dashboard_uptime"
+add_dashboard "Current Path" "$dashboard_path"
+
+show_todo
+set_prompt
+set_title
+
 export PS2='# '
 export PS3='# '
 export PS4='# '
