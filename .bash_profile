@@ -19,15 +19,15 @@ alias cd_desktop="cd ~/Desktop"
 alias cd_documents="cd ~/Documents"
 alias cd_downloads="cd ~/Downloads"
 
-black='\e[30m'
-white='\e[37m'
-red='\e[31m'
-green='\e[32m'
-yellow='\e[33m'
-blue='\e[34m'
-magenta='\e[35m'
-cyan='\e[36m'
-reset='\e[0m' # reset color and formatting
+black='\[\e[30m\]'
+white='\[\e[37m\]'
+red='\[\e[31m\]'
+green='\[\e[32m\]'
+yellow='\[\e[33m\]'
+blue='\[\e[34m\]'
+magenta='\[\e[35m\]'
+cyan='\[\e[36m\]'
+reset='\[\e[0m\]' # reset color and formatting
 
 print() {  
   for i in "${@:2}"; do
