@@ -14,11 +14,23 @@ alias gc="git com" # commit
 alias gn="git new" # show new commits since last pull
 alias g+="git add"
 
+alias cd_dev="cd ~/Development"
+alias cd_personal="cd ~/Development/personal"
+alias cd_tab="cd ~/Development/TAB"
 alias cd_dropbox="cd ~/Dropbox"
 alias cd_desktop="cd ~/Desktop"
 alias cd_documents="cd ~/Documents"
 alias cd_downloads="cd ~/Downloads"
+alias cd_wallpapers="cd ~/Pictures/Wallpapers"
 
+alias jekyll-serve="open_site & bundle exec jekyll serve -w"
+alias jekyll-update="git add . ; git commit -am 'new post'; git push"
+alias psql="'/Applications/Postgres.app/Contents/Versions/9.3/bin'/psql -p5432"
+
+export EDITOR="/usr/bin/emacs"
+export TASKS_FILE="$HOME/.tasks"
+
+# colors
 black='\[\e[30m\]'
 white='\[\e[37m\]'
 red='\[\e[31m\]'
@@ -27,7 +39,14 @@ yellow='\[\e[33m\]'
 blue='\[\e[34m\]'
 magenta='\[\e[35m\]'
 cyan='\[\e[36m\]'
-reset='\[\e[0m\]' # reset color and formatting
+
+# formatting
+underline='\[\e[4m\]'
+bold='\[\e[1m\]'
+blink='\[\e[5m\]'
+
+# reset color and formatting
+reset='\[\e[0m\]' 
 
 print() {  
   for i in "${@:2}"; do
@@ -44,6 +63,24 @@ printn () {
 
 no_internet() {
   printn "You don't appear to have an internet connection." $red
+}
+
+ssh_mate() {
+  ssh -R 52698:localhost:52698 $1
+}
+
+mark() {
+  echo ""
+  printf $magenta
+  echo $(date)
+  printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -
+  printf $reset
+  echo ""
+}
+
+open_site() {
+  sleep 1
+  open "http://0.0.0.0:4000"
 }
 
 open_workspace_or_project_with_app()
@@ -220,39 +257,11 @@ set_title() {
       fi
     fi
   
-    PS1="\[[$local_branch..$remote_branch$git_status]\] $current_path # "
+    PS1="[$local_branch..$remote_branch$git_status] $current_path # "
   fi
 }
 
 clear
-cat <<EOF    
-
-                         ''~\`\`
-                        ( o o )
-+------------------.oooO--(_)--Oooo.------------------+
-|                                                     |
-|                    .oooO                            |
-|                    (   )   Oooo.                    |
-+---------------------\ (----(   )--------------------+
-
-
-EOF
-
-dashboard_hour=$(date +"%H")
-dashboard_uptime=$(uptime | sed 's/.*up \([^,]*\), .*/\1/')
-dashboard_path="${PWD//$HOME/~}"
-dashboard_ip=$(ifconfig en0 | awk '/inet / {print $2}' | sed 's/^[addr:]*//g')
-
-configure_greeting
-configure_network
-
-printn "$greet"
-
-add_dashboard "Network" "$dashboard_network"
-add_dashboard "Uptime" "$dashboard_uptime"
-add_dashboard "Current Path" "$dashboard_path"
-
-show_todo
 
 export PROMPT_COMMAND='set_title'
 export PS2='# '
