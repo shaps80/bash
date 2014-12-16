@@ -30,25 +30,23 @@ alias psql="'/Applications/Postgres.app/Contents/Versions/9.3/bin'/psql -p5432"
 export EDITOR="/usr/bin/emacs"
 export TASKS_FILE="$HOME/.tasks"
 
-current_path="${PWD##*/}"
-
 # colors
-black='\001\e[30m\002'
-white='\001\e[37m\002'
-red='\001\e[31m\002'
-green='\001\e[32m\002'
-yellow='\001\e[33m\002'
-blue='\001\e[34m\002'
-magenta='\001\e[35m\002'
-cyan='\001\e[36m\002'
+black='\001\033[30m\002'
+white='\001\033[37m\002'
+red='\001\033[31m\002'
+green='\001\033[32m\002'
+yellow='\001\033[33m\002'
+blue='\001\033[34m\002'
+magenta='\001\033[35m\002'
+cyan='\001\033[36m\002'
 
 # formatting
-underline='\001\e[4m\002'
-bold='\001\e[1m\002'
-blink='\001\e[5m\002'
+underline='\001\033[4m\002'
+bold='\001\033[1m\002'
+blink='\001\033[5m\002'
 
 # reset color and formatting
-reset='\001\e[0m\002' 
+reset='\001\033[0m\002' 
 
 print() {  
   for i in "${@:2}"; do
@@ -199,16 +197,20 @@ restore_pwd() {
 }
 
 set_title() {
-  PROMPT_COMMAND="echo -ne \"\033]0;$current_path\007\""
+  local SEARCH=' ';
+  local REPLACE='%20';
+  local PWD_URL="file://$HOSTNAME${PWD//$SEARCH/$REPLACE}";
+  printf '\e]7;%s\a' "$PWD_URL"
 }
 
 # [local..remote -> status] pwd #
 set_prompt() {	  
   restore_pwd # This MUST be called in order to restore the PWD after a relaunch!
   
-  local local_branch="$red<no branch>$reset"
-  local remote_branch="$red<no remote>$reset"
-  local git_status=""
+  current_path="${PWD##*/}"
+  local_branch="<no branch>"
+  remote_branch="<no remote>"
+  git_status=""
   
 	git rev-parse > /dev/null 2>&1
 
@@ -216,26 +218,26 @@ set_prompt() {
   	# we're not inside a repo 
     PS1="$current_path # "
   else
-    branch=$(git branch | grep \*)
+    branch="$(git branch | grep \*)"
   
     if [[ ! -z $branch ]]; then
       # we have a local branch
       branch="${branch//\* /}"
-      local_branch=$branch
+      local_branch="$branch"
     
       git diff-index --quiet HEAD -- > /dev/null 2>&1
     
       if [ $? -ne 0 ]; then
         # the repo has changes
-        local_branch="$red$local_branch$reset"
+        local_branch="$red$local_branch"
       else
         untracked=$(git ls-files --others --exclude-standard) > /dev/null 2>&1
       
         if [[ ! -z $untracked ]]; then
           # the repo has untracked files only
-          local_branch="$yellow$local_branch$reset"
+          local_branch="$yellow$local_branch"
         else
-          local_branch="$green$local_branch$reset"
+          local_branch="$green$local_branch"
         fi
       fi
     fi
@@ -251,53 +253,61 @@ set_prompt() {
       BASE=$(git merge-base @ @{u})
     
       if [ $LOCAL = $REMOTE ]; then
-        git_status=" ->$green up-to-date$reset"
+        git_status="$reset ->$green up-to-date$reset"
       elif [ $LOCAL = $BASE ]; then
-        git_status=" ->$yellow behind$reset"
+        git_status="$reset ->$yellow behind$reset"
       elif [ $REMOTE = $BASE ]; then
-        git_status=" ->$yellow ahead$reset"
+        git_status="$reset ->$yellow ahead$reset"
       else
-        git_status=" ->$yellow diverged$reset"
+        git_status="$reset ->$yellow diverged$reset"
       fi
     fi
   
-    PS1="[$local_branch..$remote_branch$git_status] $current_path # "
+    PS1="[$local_branch$reset..$remote_branch$git_status] $current_path # "
   fi
 }
 
-clear
+present_dashboard() {
 cat <<EOF    
 
-                         ''~\`\`
-                        ( o o )
-+------------------.oooO--(_)--Oooo.------------------+
-|                                                     |
-|                    .oooO                            |
-|                    (   )   Oooo.                    |
-+---------------------\ (----(   )--------------------+
+                           ''~\`\`
+                          ( o o )
+  +------------------.oooO--(_)--Oooo.------------------+
+  |                                                     |
+  |                    .oooO                            |
+  |                    (   )   Oooo.                    |
+  +---------------------\ (----(   )--------------------+
 
 
 EOF
+  
+  dashboard_hour=$(date +"%H")
+  dashboard_uptime=$(uptime | sed 's/.*up \([^,]*\), .*/\1/')
+  dashboard_path="${PWD//$HOME/~}"
+  dashboard_ip=$(ifconfig en0 | awk '/inet / {print $2}' | sed 's/^[addr:]*//g')
 
-dashboard_hour=$(date +"%H")
-dashboard_uptime=$(uptime | sed 's/.*up \([^,]*\), .*/\1/')
-dashboard_path="${PWD//$HOME/~}"
-dashboard_ip=$(ifconfig en0 | awk '/inet / {print $2}' | sed 's/^[addr:]*//g')
+  configure_greeting
+  configure_network
 
-configure_greeting
-configure_network
+  printn "$greet"
 
-printn "$greet"
+  add_dashboard "Network" "$dashboard_network"
+  add_dashboard "Uptime" "$dashboard_uptime"
+  add_dashboard "Current Path" "$dashboard_path"
 
-add_dashboard "Network" "$dashboard_network"
-add_dashboard "Uptime" "$dashboard_uptime"
-add_dashboard "Current Path" "$dashboard_path"
+  show_todo
+}
 
-show_todo
-set_prompt
-set_title
+configure_prompts() {
+  export PROMPT_COMMAND='set_prompt'
+  return
 
-export PS2='# '
-export PS3='# '
-export PS4='# '
+  export PS2='# '
+  export PS3='# '
+  export PS4='# '
+}
+
+clear
+present_dashboard
+configure_prompts
 
