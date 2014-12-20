@@ -196,15 +196,14 @@ restore_pwd() {
   printf '\e]7;%s\a' "$pwd_url"
 }
 
-set_title() {
-  local SEARCH=' ';
-  local REPLACE='%20';
-  local PWD_URL="file://$HOSTNAME${PWD//$SEARCH/$REPLACE}";
-  printf '\e]7;%s\a' "$PWD_URL"
+set_title() {  
+  current_path="${PWD##*/}"
+  printf '\033]2;'$current_path'\007'
 }
 
 # [local..remote -> status] pwd #
 set_prompt() {	  
+  set_title
   restore_pwd # This MUST be called in order to restore the PWD after a relaunch!
   
   current_path="${PWD##*/}"
@@ -300,8 +299,6 @@ EOF
 
 configure_prompts() {
   export PROMPT_COMMAND='set_prompt'
-  return
-
   export PS2='# '
   export PS3='# '
   export PS4='# '
