@@ -21,7 +21,7 @@ The most important upgrade to this version is that I've cleaned up the entire sc
 
 ## Dashboard
 
-* A time specific welcome greeting
+* A time-specific greeting
 * IP address and gateway
 * Connection state, IP, not connected, no internet, etc...
 * Current working directory
@@ -36,6 +36,7 @@ The prompt now shows various states to indicate the current status of your git r
 * If you have a local branch with no remote
 * If you have changes on your local branch
 * If you are ahead, behind, diverged or up-to-date on your local branch -- compare to remote
+* and more... 
 
 ## Development
 
@@ -46,4 +47,4 @@ The prompt now shows various states to indicate the current status of your git r
 Requirements
 ------------
 
-This script has **zero** dependencies!
+This script has **zero** dependencies! Enjoy ;)
