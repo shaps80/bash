@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
 alias ls='ls -G'  
+alias ll='ls -l'
+alias la='ls -al'
 alias grep='grep --color=auto'
+
 alias mate_bash="mate ~/.bash_profile"
 alias mate_tig="mate ~/.tigrc"
 alias mate_git="mate ~/.gitconfig"
@@ -197,8 +200,8 @@ restore_pwd() {
 }
 
 set_title() {  
-  current_path="${PWD##*/}"
-  printf '\033]2;'$current_path'\007'
+  current_path=${PWD##*/}
+  printf "\033]2;$current_path\007"
 }
 
 # [local..remote -> status] pwd #
@@ -297,14 +300,12 @@ EOF
   show_todo
 }
 
-configure_prompts() {
-  export PROMPT_COMMAND='set_prompt'
-  export PS2='# '
-  export PS3='# '
-  export PS4='# '
-}
 
 clear
 present_dashboard
-configure_prompts
+
+export PROMPT_COMMAND='set_prompt'
+export PS2='# '
+export PS3='# '
+export PS4='# '
 
