@@ -1,13 +1,45 @@
 #!/usr/bin/env bash
 
-alias ls='ls -G'  
-alias ll='ls -l'
+source ~/.bashrc
+source ~/.profile
+
+alias open.='open .'
+alias ls='ls -G'
+alias ll='ls -lG'
 alias la='ls -al'
+alias ld='ls -ld -- *'
+alias lh='ls -ld .[^.]*'
 alias grep='grep --color=auto'
 
+alias byword="open -a /Applications/Byword.app/"
 alias mate_bash="mate ~/.bash_profile"
 alias mate_tig="mate ~/.tigrc"
 alias mate_git="mate ~/.gitconfig"
+
+function post() {
+  year=$(date +"%Y")
+  month=$(date +"%B")
+  post_dir="$year/$month"
+  current_date=$(date +"%Y-%m-%d")
+  
+  path=$(octopress new post --template post --dir "$post_dir" "$1")
+  
+  if [[ $? != 0 ]]; then
+    echo "A post with that title already exists!"
+    return
+  fi
+  
+  echo "Create new post $path..."
+  byword $path
+}
+
+function page() {  
+  octopress new page --dir "$1" "$2"
+}
+
+alias page="octopress new page"
+alias publish="octopress publish"
+alias unpublish="octopress unpublish"
 
 alias gs="git st" # show status
 alias gd="git del" # delete branch
@@ -29,6 +61,7 @@ alias cd_wallpapers="cd ~/Pictures/Wallpapers"
 alias jekyll-serve="open_site & bundle exec jekyll serve -w"
 alias jekyll-update="git add . ; git commit -am 'new post'; git push"
 alias psql="'/Applications/Postgres.app/Contents/Versions/9.3/bin'/psql -p5432"
+alias irc="weechat"
 
 export EDITOR="/usr/bin/emacs"
 export TASKS_FILE="$HOME/.tasks"
@@ -66,10 +99,6 @@ printn () {
 
 no_internet() {
   printn "You don't appear to have an internet connection." $red
-}
-
-ssh_mate() {
-  ssh -R 52698:localhost:52698 $1
 }
 
 mark() {
@@ -171,7 +200,7 @@ configure_network() {
   if [[ -z $dashboard_ip ]]; then
   	dashboard_network="$red""No Connection""$reset"
   else
-    ping=$(ping -s1 -t1 -n -i0.1 -c1 8.8.8.8)
+    ping=$(ping -s1 -t1 -n -i0.1 -c1 8.8.8.8 2> /dev/null)
     if [[ -z $ping ]]; then
       dashboard_network="$dashboard_ip <$yellow""No Internet""$reset>"
     else
@@ -280,7 +309,6 @@ cat <<EOF
   |                    (   )   Oooo.                    |
   +---------------------\ (----(   )--------------------+
 
-
 EOF
   
   dashboard_hour=$(date +"%H")
@@ -299,7 +327,6 @@ EOF
 
   show_todo
 }
-
 
 clear
 present_dashboard
