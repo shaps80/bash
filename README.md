@@ -46,7 +46,3 @@ The prompt now shows various states to indicate the current status of your git r
   - In the event you have multiple workspaces or projects, you will be prompted for a selection
 * opena performs the same as above, but with AppCode as your editor choice
 
-Requirements
-------------
-
-This script has **zero** dependencies! Enjoy ;)
