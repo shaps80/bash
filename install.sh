@@ -1,26 +1,26 @@
 #!/bin/bash
 
-echo 'Downloading script.sh ...'
-curl -o /tmp/script.sh https://raw.githubusercontent.com/shaps80/bash/master/script.sh
-
 bashrc=".bashrc"
 bashprofile=".bash_profile"
-backup="~/script_backup"
-script="script.sh"
+backup="$HOME/Backup"
+script="/tmp/script.sh"
 
-if [ -z "$backup" ]; then
+echo 'Downloading script.sh ...'
+curl -o $script https://raw.githubusercontent.com/shaps80/bash/master/script.sh
+
+if [ ! -d "$backup" ]; then
   mkdir "$backup"
 fi
 
-if  [ ! -z "~/$bashrc" ]; then
+if  [ -f "$HOME/$bashrc" ]; then
   echo ""
-  echo "Backing up ~/$bashrc to $backup/$bashrc"
-  cp "~/$bashrc" "$backup/$bashrc"
+  echo "Backing up $HOME/$bashrc to $backup/$bashrc"
+  cp "$HOME/$bashrc" "$backup/$bashrc"
 fi
 
-if  [ ! -z "~/$bashprofile" ]; then
-  echo "Backing up ~/$bashprofile to $backup/$bashprofile"
-  cp "~/$bashprofile" $backup/$bashprofile
+if  [ -f "$HOME/$bashprofile" ]; then
+  echo "Backing up $HOME/$bashprofile to $backup/$bashprofile"
+  cp "$HOME/$bashprofile" $backup/$bashprofile
 fi
 
 echo ""
@@ -33,17 +33,15 @@ echo ""
 
 case ${answer:0:1} in
     2) 
-    echo "Copying $script to ~/$bashrc"
-    cp $script ~/$bashrc
+    echo "Updating ~/$bashrc"
+    cp $script $HOME/$bashrc
     ;;
     *) 
-    echo "Copying ~/$script to ~/$bashprofile" 
-    cp $script ~/$bashprofile
+    echo "Updating ~/$bashprofile" 
+    mv $script ~/$bashprofile
     
     ;;
 esac
-
-rm $script
 
 echo ""
 echo 'Done - restart or logout to load this script'
