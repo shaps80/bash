@@ -5,7 +5,7 @@ BASH Profile
 
 ## Installation
 
-curl -L https://raw.githubusercontent.com/shaps80/bash/master/install.sh | bash 
+`curl -L https://raw.githubusercontent.com/shaps80/bash/master/install.sh | bash `
 
 
 ## Updates
