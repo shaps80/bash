@@ -43,5 +43,7 @@ case ${answer:0:1} in
     ;;
 esac
 
+rm $script
+
 echo ""
 echo 'Done - restart or logout to load this script'
