@@ -1,1 +1,0 @@
-/Users/Shaps/Dropbox/Mackup/.bash_profile
