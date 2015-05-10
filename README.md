@@ -3,6 +3,11 @@ BASH Profile
 
 <img src="https://raw.githubusercontent.com/shaps80/bash/master/git-messages.jpg" name="Bash Login Script"/>
 
+## Installation
+
+curl -L https://raw.githubusercontent.com/shaps80/bash/master/install.sh | bash 
+
+
 ## Updates
 
 More full-featured GIT support. Xcode support and more...
