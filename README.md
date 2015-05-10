@@ -8,10 +8,7 @@ BASH Profile
 `curl -L https://raw.githubusercontent.com/shaps80/bash/master/install.sh | bash `
 
 
-## Updates
-
-More full-featured GIT support. Xcode support and more...
-To install, copy the script to __'~/._bash_profile'__ or __'~/.bashrc'__
+Alternatively, download `script.sh` yourself and copy the script to `__~/._bash_profile__` or `__~/.bashrc__`
 
 ## Summary
 
