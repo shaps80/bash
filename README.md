@@ -1,7 +1,7 @@
 BASH Profile
 ============
 
-<img src="https://raw.githubusercontent.com/shaps80/bash/master/git-messages.jpg" name="Bash Login Script" width="395" height="380"/>
+<img src="https://raw.githubusercontent.com/shaps80/bash/master/git-messages.jpg" name="Bash Login Script"/>
 
 ## Updates
 
