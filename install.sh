@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo 'Downloading script.sh ...'
-curl -o /tmp/script.sh https://raw.githubusercontent.com/shaps80/bash/master/script.sh
+#curl -o /tmp/script.sh https://raw.githubusercontent.com/shaps80/bash/master/script.sh
 
 echo 'Backing up to ~/script_backup ...'
 
