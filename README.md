@@ -8,7 +8,7 @@ BASH Profile
 `curl -L https://raw.githubusercontent.com/shaps80/bash/master/install.sh | bash `
 
 
-Alternatively, download `script.sh` yourself and copy the script to `__~/._bash_profile__` or `__~/.bashrc__`
+Alternatively, download `script.sh` yourself and copy the script to `~/._bash_profile` or `~/.bashrc`
 
 ## Summary
 
