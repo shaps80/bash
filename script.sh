@@ -22,7 +22,6 @@ alias unpublish="octopress unpublish"
 
 alias gs="git st" # show status
 alias gd="git del" # delete branch
-alias go="git co" # switch branch
 alias gb="git nb" # new branch
 alias gc="git com" # commit
 alias gn="git new" # show new commits since last pull
@@ -227,15 +226,20 @@ configure_greeting() {
 }
 
 configure_network() {
-  if [[ -z $dashboard_ip ]]; then
-  	dashboard_network="$red""No Connection""$reset"
+  if [[ -z $dashboard_local_ip ]]; then
+  	dashboard_network="$red""No Network""$reset"
   else
-    ping=$(ping -s1 -t1 -n -i0.1 -c1 8.8.8.8 2> /dev/null)
-    if [[ -z $ping ]]; then
-      dashboard_network="$dashboard_ip <$yellow""No Internet""$reset>"
-    else
-      dashboard_network="$dashboard_ip $reset"
-    fi
+    dashboard_network="$dashboard_local_ip"
+  fi
+}
+
+configure_internet() {
+  test_internet
+  if [[ $? == 0 ]]; then
+    dashboard_internet="$dashboard_remote_ip"
+    dashboard_internet=${dashboard_remote_ip/\r\n/ }
+  else
+    dashboard_internet="$red""No Internet""$reset"
   fi
 }
 
@@ -334,7 +338,23 @@ set_prompt() {
   fi
 }
 
+test_internet() {
+  dashboard_remote_ip=$(dig +short myip.opendns.com @resolver1.opendns.com 2>&1 /dev/null | tr '\n' ' ')
+}
+
+alias reload="refresh"
+refresh() {
+  present_dashboard
+}
+
 present_dashboard() {
+  dashboard_hour=$(date +"%H")
+  dashboard_uptime=$(uptime | sed 's/.*up \([^,]*\), .*/\1/' | xargs)
+  dashboard_path="${PWD//$HOME/~}"
+  dashboard_local_ip=$(ifconfig | grep "inet " | grep -v 127.0.0.1 | awk '{print $2}' | tr '\n' ' ')
+  
+  test_internet
+  
 cat <<EOF    
 
                            ''~\`\`
@@ -346,18 +366,15 @@ cat <<EOF
   +---------------------\ (----(   )--------------------+
 
 EOF
-  
-  dashboard_hour=$(date +"%H")
-  dashboard_uptime=$(uptime | sed 's/.*up \([^,]*\), .*/\1/')
-  dashboard_path="${PWD//$HOME/~}"
-  dashboard_ip=$(ifconfig en0 | awk '/inet / {print $2}' | sed 's/^[addr:]*//g')
 
   configure_greeting
   configure_network
+  configure_internet
 
   printn "$greet"
 
   add_dashboard "Network" "$dashboard_network"
+  add_dashboard "Internet" "$dashboard_internet"
   add_dashboard "Uptime" "$dashboard_uptime"
   add_dashboard "Current Path" "$dashboard_path"
 
